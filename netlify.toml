@@ -1,0 +1,8 @@
+[build]
+  publish = "public"
+
+[[redirects]]
+  from = "/*"
+  to = "https://xinqushi-bio-lab.mafon8888.chatgpt.site/:splat"
+  status = 200
+  force = true
