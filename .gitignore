@@ -41,3 +41,4 @@ yarn-error.log*
 .dev-out.log
 .dev-err.log
 .dev-pid
+.sites-package/
