@@ -42,3 +42,6 @@ yarn-error.log*
 .dev-err.log
 .dev-pid
 .sites-package/
+
+# Local Netlify folder
+.netlify
