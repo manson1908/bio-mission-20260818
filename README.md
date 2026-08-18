@@ -1,100 +1,63 @@
-# vinext-starter
+# BIO MISSION｜生物特務挑戰
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+給國一學生使用手機或平板操作的生物課堂個人闖關網站。包含 8 項任務、即時計分、速度分、Combo、倒數計時、教師模式、本機進度與排行榜。
 
-## Prerequisites
+## 安裝
 
-- Node.js `>=22.13.0`
-
-## Quick Start
+需要 Node.js 22.13 以上版本。
 
 ```bash
 npm install
+```
+
+## 啟動
+
+```bash
 npm run dev
+```
+
+開啟終端顯示的本機網址（預設為 `http://localhost:3000`）。
+
+正式版本檢查：
+
+```bash
 npm run build
+npm run start
 ```
 
-This starter does not use `wrangler.jsonc`.
+## 專案結構
 
-## Included Shape
+- `app/page.tsx`：遊戲流程、八關互動、計分、進度、排行榜與教師模式
+- `app/questions.ts`：獨立題庫與題目資料型別
+- `app/config.ts`：教師密碼、遊戲時間、計分參數、儲存鍵值
+- `app/globals.css`：視覺設計、動畫與手機版 RWD
+- `app/layout.tsx`：網站標題與說明
+- `.openai/hosting.json`：Sites 部署設定
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+## 新增題目
 
-## Workspace Auth Headers
+在 `app/questions.ts` 的 `questions` 陣列加入物件，格式包含 `id`、`chapter`、`stage`、`type`、`question`、`options`、`answer`、`explanation`、`points`、`difficulty`。
 
-Signed-in visitors receive both `oai-authenticated-user-id` and `oai-authenticated-user-email`. Private Sites require every visitor to sign in; public Sites may also have anonymous visitors, for whom neither header is present.
+可用關卡代碼：`science`、`life`、`microscope`、`cell`、`osmosis`、`nutrition`、`enzyme`、`boss`。
 
-The user ID is stable for the same user on the same Site and different across Sites. Email and name are intended for display or contact purposes.
+## 修改分數
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
+在 `app/config.ts` 修改 `SCORE_CONFIG`：
 
-Treat the full name as optional and fall back to email when it is absent:
+- `correct`：答對基本分
+- `maxSpeed`：最高速度加分
+- `combo`：達到指定連勝時的額外分
 
-```tsx
-import { headers } from "next/headers";
+實際計算集中在 `app/page.tsx` 的 `calculateScore()`，方便日後替換規則。
 
-export default async function Home() {
-  const requestHeaders = await headers();
-  const userId = requestHeaders.get("oai-authenticated-user-id");
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
+## 修改教師密碼
 
-  const displayName = fullName ?? email;
-  // ...
-}
-```
+在 `app/config.ts` 修改 `TEACHER_PASSWORD`。預設為 `1234`。目前是課堂 MVP 的簡單前端密碼，不適合保護敏感資料。
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## 本機資料與後端擴充
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+學生進度與排行榜目前存於瀏覽器 `localStorage`。排行榜資料已集中為 `Board` 結構，未來可將讀寫函式替換為 Firebase、Supabase 或 Google Sheet API。
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+## 部署
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
-
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
-
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
-
-## Useful Commands
-
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+先執行 `npm run build`。專案已含 Sites 設定，也可依平台選擇 Netlify 或其他支援 Vite／Cloudflare Worker 輸出的服務。
