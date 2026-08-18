@@ -3,6 +3,6 @@
 
 [[redirects]]
   from = "/*"
-  to = "https://xinqushi-bio-lab.mafon8888.chatgpt.site/:splat"
+  to = "https://bio-mission-20260818.mafon8888.chatgpt.site/:splat"
   status = 200
   force = true
