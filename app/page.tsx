@@ -63,6 +63,6 @@ export default function App(){
   {toast&&<div className="toast">{toast}</div>}<div className="lab-grid" aria-hidden="true"/>
  </main>
 }
-function Brand(){return <div className="brand-lockup"><span className="brand-atom">B</span><div><b>BIO MISSION</b><small>JUNIOR RESEARCH DIVISION</small></div></div>}
+function Brand(){return <div className="brand-lockup"><img className="brand-logo" src="/xinqushi-logo.png" alt="新趨勢文理補習班 Logo"/><div><b>新趨勢文理補習班</b><small>BIO MISSION・生物特務挑戰</small></div></div>}
 function GameHeader({game,sound,setSound,fmt}:{game:Saved;sound:boolean;setSound:(x:boolean)=>void;fmt:(n:number)=>string}){return <header className="game-header"><Brand/><div className="hud"><div><span>SCORE</span><b>{game.score.toLocaleString()}</b></div><div><span>COMBO</span><b>×{game.combo}</b></div><div className={game.seconds<300?"urgent":""}><span>TIME</span><b>{fmt(game.seconds)}</b></div><button onClick={()=>setSound(!sound)} aria-label="切換音效">{sound?"♪":"♩"}</button></div></header>}
 function Leaderboard({board,fmt}:{board:Board[];fmt:(n:number)=>string}){return <div className="leaderboard"><h2>本機排行榜</h2><div className="board-head"><span>排名</span><span>特務</span><span>分數</span><span>時間</span><span>正確率</span></div>{board.length?board.slice(0,10).map((r,i)=><div className="board-row" key={`${r.name}-${r.date}-${i}`}><b>{i+1}</b><span>{r.name}<small>{r.className}</small></span><strong>{r.score}</strong><span>{fmt(r.seconds)}</span><span>{r.accuracy}%</span></div>):<p className="empty">尚無任務紀錄</p>}</div>}

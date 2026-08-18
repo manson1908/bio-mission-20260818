@@ -1,0 +1,24 @@
+.brand-logo {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px #ffdf55, 0 0 24px #ff333344;
+}
+
+.brand-lockup b {
+  letter-spacing: 1.5px;
+}
+
+@media (max-width: 560px) {
+  .brand-logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  .landing-nav .brand-lockup b {
+    font-size: 12px;
+    letter-spacing: .5px;
+  }
+}
